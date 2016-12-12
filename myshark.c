@@ -1,24 +1,25 @@
-#define HAVE_STDARG_H 1
-#define WS_MSVC_NORETURN
-#define _GNU_SOURCE
+//#define HAVE_STDARG_H 1
+//#define WS_MSVC_NORETURN
+//#define _GNU_SOURCE
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <string.h>
-#include <wireshark/epan/epan.h>
-#include <wireshark/epan/print.h>
-#include <wireshark/epan/timestamp.h>
-#include <wireshark/epan/prefs.h>
-#include <wireshark/epan/column.h>
-#include <wireshark/epan/epan-int.h>
-#include <wireshark/wsutil/privileges.h>
-#include <wireshark/epan/epan_dissect.h>
-#include <wireshark/epan/proto.h>
-#include <wireshark/epan/ftypes/ftypes.h>
-#include <wireshark/epan/asm_utils.h>
+#include <wireshark/config.h> /* needed by epan */
+#include <epan/epan.h>
+#include <epan/print.h>
+#include <epan/timestamp.h>
+#include <epan/prefs.h>
+#include <epan/column.h>
+#include <epan/epan-int.h>
+#include <wsutil/privileges.h>
+#include <epan/epan_dissect.h>
+#include <epan/proto.h>
+#include <epan/ftypes/ftypes.h>
+#include <epan/asm_utils.h>
 
-extern tvbuff_t *frame_tvbuff_new(const frame_data *fd, const guint8 *buf);
+// extern tvbuff_t *frame_tvbuff_new(const frame_data *fd, const guint8 *buf);
 static void timestamp_set(capture_file cfile);
 static const nstime_t *tshark_get_frame_ts(void *data, guint32 frame_num);
 static void clean();
@@ -102,7 +103,7 @@ gboolean read_packet(epan_dissect_t **edt_r)
 		frame_data_set_before_dissect(&fdlocal, &cfile.elapsed_time, &cfile.ref, cfile.prev_dis);
 		cfile.ref = &fdlocal;
 
-		epan_dissect_run(edt, cfile.cd_t, &(cfile.phdr), frame_tvbuff_new(&fdlocal, buf), &fdlocal, &cfile.cinfo);
+		//epan_dissect_run(edt, cfile.cd_t, &(cfile.phdr), frame_tvbuff_new(&fdlocal, buf), &fdlocal, &cfile.cinfo);
 
 		frame_data_set_after_dissect(&fdlocal, &cum_bytes);
 		cfile.prev_cap = cfile.prev_dis = frame_data_sequence_add(cfile.frames, &fdlocal);
@@ -140,7 +141,7 @@ void print_each_packet_xml()
 
 	while (read_packet(&edt)) {
 
-		proto_tree_write_pdml(edt, stdout);
+		;//proto_tree_write_pdml(edt, stdout);
 
 		epan_dissect_free(edt);
 		edt = NULL;
@@ -160,7 +161,7 @@ void print_each_packet_text()
 
 	while (read_packet(&edt)) {
 
-		proto_tree_print(&print_args, edt, print_stream);
+		;//proto_tree_print(&print_args, edt, print_stream);
 
 		epan_dissect_free(edt);
 		edt = NULL;
@@ -170,7 +171,7 @@ void print_each_packet_text()
 static void
 timestamp_set(capture_file cfile)
 {
-	switch(wtap_file_tsprecision(cfile.wth)) {
+	/*switch(wtap_file_tsprecision(cfile.wth)) {
 		case(WTAP_FILE_TSPREC_SEC):
 			timestamp_set_precision(TS_PREC_AUTO_SEC);
 			break;
@@ -191,7 +192,7 @@ timestamp_set(capture_file cfile)
 			break;
 		default:
 			g_assert_not_reached();
-	}
+	}*/
 }
 
 static const nstime_t *
@@ -272,10 +273,10 @@ int main(int argc, char* argv[])
 
 	switch (print_type) {
 	case PRINT_XML:
-		print_each_packet_xml();
+		;//print_each_packet_xml();
 		break;
 	case PRINT_TEXT:
-		print_each_packet_text();
+		;//print_each_packet_text();
 		break;
 	}
 
